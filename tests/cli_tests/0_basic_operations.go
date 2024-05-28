@@ -41,4 +41,5 @@ func TestZs3Server(testSetup *testing.T) {
 
 		assert.NotContains(t, output, "mc: <ERROR>")
 	})
+	
 }
