@@ -1,0 +1,37 @@
+# Binaries for programs and plugins
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+
+*.out
+
+# Dependency directories (remove the comment below to include it)
+
+vendor/
+
+# Temp test output
+tests/cli_tests/config/*.json
+tests/cli_tests/config/*allocation.txt
+tests/cli/tmp/
+**/cmdlog.log
+**/bridge.log
+**/zbox
+**/zwallet
+**/allocation.txt
+
+.DS_STORE
+.idea
+.vscode
+tests/cli/__debug_bin
+tests/cli_tests/*.png
+
+**/*.log
