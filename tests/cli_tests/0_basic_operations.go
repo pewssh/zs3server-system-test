@@ -13,7 +13,7 @@ import (
 func TestZs3Server(testSetup *testing.T) {
 	t := test.NewSystemTest(testSetup)
 
-	// check if mc command is aviailable
+	// check if mc command is available
 	if _, err := os.Stat("mc"); os.IsNotExist(err) {
 		t.Fatalf("mc is not installed")
 	} else {
@@ -33,7 +33,7 @@ func TestZs3Server(testSetup *testing.T) {
 		assert.Contains(t, output, "Bucket created successfully `zcn/custombucket`.")
 	})
 
-	t.RunSequentially("Test File Upload", func(t *test.SystemTest) {
+	t.RunSequentially("Test Copying File Upload", func(t *test.SystemTest) {
 		// create a file with content
 		cli_utils.RunCommand(t, "echo 'test' > a.txt", 0, time.Hour*2)
 
@@ -41,5 +41,10 @@ func TestZs3Server(testSetup *testing.T) {
 
 		assert.NotContains(t, output, "mc: <ERROR>")
 	})
-	
+
+	t.RunSequentially("Test for moving file", func(t *test.SystemTest) {
+		output, _ := cli_utils.RunCommand(t, "mc mv zcn/custombucket/a.txt zcn/custombucket/b.txt", 1, time.Hour*2)
+		assert.NotContains(t, output, "mc: <ERROR>")
+	})
+
 }
