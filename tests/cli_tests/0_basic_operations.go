@@ -47,4 +47,9 @@ func TestZs3Server(testSetup *testing.T) {
 		assert.NotContains(t, output, "mc: <ERROR>")
 	})
 
+	t.RunSequentially("Test for removing file", func(t *test.SystemTest) {
+		output, _ := cli_utils.RunCommand(t, "mc rm zcn/custombucket/b.txt", 1, time.Hour*2)
+		assert.Contains(t, output, "Removed `zcn/custombucket/b.txt`.")
+	})
+
 }
