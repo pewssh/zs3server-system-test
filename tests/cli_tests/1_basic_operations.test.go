@@ -52,4 +52,18 @@ func TestZs3Server(testSetup *testing.T) {
 		assert.Contains(t, output, "Removed `zcn/custombucket/b.txt`.")
 	})
 
+	t.RunSequentially("Test for removing bucket", func(t *test.SystemTest) {
+		output, _ := cli_utils.RunCommand(t, "mc rb zcn/custombucket", 1, time.Hour*2)
+		assert.Contains(t, output, "Removed `zcn/custombucket` successfully.")
+	})
+
+	t.RunSequentially("Test for copying file ", func(t *test.SystemTest) {
+		// create a file with content
+		cli_utils.RunCommand(t, "echo 'test' > a.txt", 0, time.Hour*2)
+
+		output, _ := cli_utils.RunCommand(t, "mc cp a.txt zcn/custombucket", 1, time.Hour*2)
+
+		assert.NotContains(t, output, "mc: <ERROR>")
+	})
+
 }
