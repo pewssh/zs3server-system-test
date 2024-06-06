@@ -24,7 +24,6 @@ tests/cli_tests/config/*allocation.txt
 tests/cli/tmp/
 **/cmdlog.log
 **/bridge.log
-**/zbox
 **/zwallet
 **/allocation.txt
 
@@ -35,3 +34,5 @@ tests/cli/__debug_bin
 tests/cli_tests/*.png
 
 **/*.log
+
+warp-**
