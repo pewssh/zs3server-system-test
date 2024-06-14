@@ -37,3 +37,5 @@ tests/cli_tests/*.png
 
 warp-**
 warp_**
+warp
+warp2
