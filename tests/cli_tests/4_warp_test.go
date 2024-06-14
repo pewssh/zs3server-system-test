@@ -50,7 +50,7 @@ func TestZs3serverWarpTests(testSetup *testing.T) {
 	server := hosts["server"].(string)
 	host := strconv.FormatInt(int64(port), 10)
 
-	commandGenerated := "./warp get --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "--duration 30s --obj.size 1KiB"
+	commandGenerated := "./warp get --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "--duration 30s" + "--obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
 	if err != nil {
