@@ -6,3 +6,4 @@ server: 65.109.152.43
 port: 9002
 access_key: rootroot
 secret_key: rootroot
+concurrent: 900

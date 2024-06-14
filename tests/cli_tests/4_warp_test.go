@@ -27,7 +27,7 @@ func appendToFile(filename string, data string) error {
 	return nil
 }
 
-func read_file(testSetup *testing.T) (string, string, string, string) {
+func read_file(testSetup *testing.T) (string, string, string, string, string) {
 	file, err := os.Open("hosts.yaml")
 	if err != nil {
 		testSetup.Fatalf("Error opening hosts.yaml file: %v\n", err)
@@ -44,15 +44,17 @@ func read_file(testSetup *testing.T) (string, string, string, string) {
 	accessKey := hosts["access_key"].(string)
 	secretKey := hosts["secret_key"].(string)
 	port := hosts["port"].(int)
+	concurrent := hosts["concurrent"].(int)
 	server := hosts["server"].(string)
 	host := strconv.FormatInt(int64(port), 10)
-	return server, host, accessKey, secretKey
+	concurrent_no := strconv.FormatInt(int64(concurrent), 10)
+	return server, host, accessKey, secretKey, concurrent_no
 
 }
 func TestZs3serverWarpTests(testSetup *testing.T) {
 	log.Println("Running Warp List Benchmark...")
 	t := test.NewSystemTest(testSetup)
-	server, host, accessKey, secretKey := read_file(testSetup)
+	server, host, accessKey, secretKey, _ := read_file(testSetup)
 	commandGenerated := "./warp get --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
@@ -76,9 +78,9 @@ func TestZs3serverWarpTests(testSetup *testing.T) {
 func TestZs3serverWarpConcurrentTests(testSetup *testing.T) {
 	log.Println("Running Warp List Benchmark with concurrent ...")
 	t := test.NewSystemTest(testSetup)
-	server, host, accessKey, secretKey := read_file(testSetup)
+	server, host, accessKey, secretKey, concurrent := read_file(testSetup)
 
-	commandGenerated := "./warp get --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent 500 --duration 30s" + " --obj.size 1KiB"
+	commandGenerated := "./warp get --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
@@ -104,9 +106,9 @@ func TestZs3serverPutWarpTests(testSetup *testing.T) {
 	log.Println("Running Warp Put Benchmark...")
 	t := test.NewSystemTest(testSetup)
 
-	server, host, accessKey, secretKey := read_file(testSetup)
+	server, host, accessKey, secretKey, concurrent := read_file(testSetup)
 
-	commandGenerated := "./warp put --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent 500 --duration 30s" + " --obj.size 1KiB"
+	commandGenerated := "./warp put --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
@@ -130,9 +132,9 @@ func TestZs3serverRetentionTests(testSetup *testing.T) {
 	log.Println("Running Warp Retention Benchmark...")
 	t := test.NewSystemTest(testSetup)
 
-	server, host, accessKey, secretKey := read_file(testSetup)
+	server, host, accessKey, secretKey, concurrent := read_file(testSetup)
 
-	commandGenerated := "./warp retention --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent 500 --duration 30s" + " --obj.size 1KiB"
+	commandGenerated := "./warp retention --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
@@ -157,9 +159,9 @@ func TestZs3serverMultipartTests(testSetup *testing.T) {
 	log.Println("Running Warp Multipart Benchmark...")
 	t := test.NewSystemTest(testSetup)
 
-	server, host, accessKey, secretKey := read_file(testSetup)
+	server, host, accessKey, secretKey, concurrent := read_file(testSetup)
 
-	commandGenerated := "./warp multipart --parts=500 --part.size=10MiB --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent 500 --duration 30s" + " --obj.size 1KiB"
+	commandGenerated := "./warp multipart --parts=500 --part.size=10MiB --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
