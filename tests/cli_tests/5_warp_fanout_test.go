@@ -13,7 +13,12 @@ func TestZs3serverFanoutTests(testSetup *testing.T) {
 	log.Println("Running Warp Fanout Benchmark...")
 	t := test.NewSystemTest(testSetup)
 
-	output, err := cliutils.RunCommand(t, "./warp fanout --copies=50 --obj.size=512KiB --concurrent=8 --host=localhost:9000 --access-key=someminiouser --secret-key=someminiopassword", 1, time.Hour*2)
+	server, host, accessKey, secretKey := read_file(testSetup)
+
+	commandGenerated := "./warp fanout --copies=50 --obj.size=512KiB --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent 500 --duration 30s" + " --obj.size 1KiB"
+	log.Println("Command Generated: ", commandGenerated)
+
+	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
 
 	if err != nil {
 		testSetup.Fatalf("Error running warp multipart: %v\nOutput: %s", err, output)
