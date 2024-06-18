@@ -27,7 +27,8 @@ cp ./zwallet ../zs3server-tests/tests/cli_tests
 
 zs3server
 cd ../zs3server
-make install
+go mod tidy
+go build .
 cp ./minio ../zs3server-tests/tests/cli_tests
 ```
 
@@ -55,3 +56,29 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
+
+
+running the test 
+
+
+Prerequistes
+File can be changed to run custom test cases 
+1. allocation.yaml 
+    -- change data, parity and lock while creating an allocation
+
+2. mc_hosts.yaml
+    -- change server, port, access_key, secret_key, concurrenct, secondary_serer, secondary_port
+
+2. hosts.yaml
+    -- change server, port, access_key, secret_key, concurrenct
+```
+cd tests/cli_tests
+go test
+
+
+<!-- for zs3server test -->
+
+cd zs3server_tests
+go test
+
+```
