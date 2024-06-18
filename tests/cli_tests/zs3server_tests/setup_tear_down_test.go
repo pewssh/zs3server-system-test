@@ -15,11 +15,11 @@ import (
 var allocationId string
 
 func TestMain(m *testing.M) {
-	// globalSetup()
+	globalSetup()
 	timeout := time.Duration(15 * time.Minute)
 	os.Setenv("GO_TEST_TIMEOUT", timeout.String())
 	code := m.Run()
-	// globalTearDown()
+	globalTearDown()
 	os.Exit(code)
 }
 
