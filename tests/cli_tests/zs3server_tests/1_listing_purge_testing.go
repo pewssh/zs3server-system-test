@@ -1,61 +1,19 @@
-package cli_tests
+package zs3servertests
 
 import (
 	"log"
-	"os"
-	"strconv"
 	"strings"
 	"testing"
 	"time"
 	test "zs3server/tests/internal/cli/tests"
 	cliutils "zs3server/tests/internal/cli/util"
-
-	"gopkg.in/yaml.v3"
 )
 
-func appendToFile(filename string, data string) error {
-	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	if _, err := file.WriteString(data); err != nil {
-		return err
-	}
-	return nil
-}
-
-func read_file(testSetup *testing.T) (string, string, string, string, string) {
-	file, err := os.Open("hosts.yaml")
-	if err != nil {
-		testSetup.Fatalf("Error opening hosts.yaml file: %v\n", err)
-	}
-	defer file.Close()
-
-	decoder := yaml.NewDecoder(file)
-	var hosts map[string]interface{}
-	err = decoder.Decode(&hosts)
-	if err != nil {
-		testSetup.Fatalf("Error decoding hosts.yaml file: %v\n", err)
-	}
-
-	accessKey := hosts["access_key"].(string)
-	secretKey := hosts["secret_key"].(string)
-	port := hosts["port"].(int)
-	concurrent := hosts["concurrent"].(int)
-	server := hosts["server"].(string)
-	host := strconv.FormatInt(int64(port), 10)
-	concurrent_no := strconv.FormatInt(int64(concurrent), 10)
-	return server, host, accessKey, secretKey, concurrent_no
-
-}
 func TestZs3serverWarpTests(testSetup *testing.T) {
 	log.Println("Running Warp List Benchmark...")
 	t := test.NewSystemTest(testSetup)
 	server, host, accessKey, secretKey, _ := read_file(testSetup)
-	commandGenerated := "./warp get --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + " --duration 30s" + " --obj.size 1KiB"
+	commandGenerated := "../warp get --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
 	if err != nil {
@@ -80,7 +38,7 @@ func TestZs3serverWarpConcurrentTests(testSetup *testing.T) {
 	t := test.NewSystemTest(testSetup)
 	server, host, accessKey, secretKey, concurrent := read_file(testSetup)
 
-	commandGenerated := "./warp get --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
+	commandGenerated := "../warp get --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
@@ -108,7 +66,7 @@ func TestZs3serverPutWarpTests(testSetup *testing.T) {
 
 	server, host, accessKey, secretKey, concurrent := read_file(testSetup)
 
-	commandGenerated := "./warp put --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
+	commandGenerated := "../warp put --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
@@ -134,7 +92,7 @@ func TestZs3serverRetentionTests(testSetup *testing.T) {
 
 	server, host, accessKey, secretKey, concurrent := read_file(testSetup)
 
-	commandGenerated := "./warp retention --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
+	commandGenerated := "../warp retention --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
@@ -161,7 +119,7 @@ func TestZs3serverMultipartTests(testSetup *testing.T) {
 
 	server, host, accessKey, secretKey, concurrent := read_file(testSetup)
 
-	commandGenerated := "./warp multipart --parts=500 --part.size=10MiB --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s"
+	commandGenerated := "../warp multipart --parts=500 --part.size=10MiB --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s"
 	log.Println("Command Generated: ", commandGenerated)
 
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
@@ -179,11 +137,4 @@ func TestZs3serverMultipartTests(testSetup *testing.T) {
 	if err != nil {
 		testSetup.Fatalf("Error appending to file: %v\n", err)
 	}
-}
-
-func TestMain(m *testing.M) {
-	timeout := time.Duration(15 * time.Minute)
-	os.Setenv("GO_TEST_TIMEOUT", timeout.String())
-
-	os.Exit(m.Run())
 }

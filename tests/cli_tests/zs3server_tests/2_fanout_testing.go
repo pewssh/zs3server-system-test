@@ -1,4 +1,4 @@
-package cli_tests
+package zs3servertests
 
 import (
 	"log"
@@ -15,7 +15,7 @@ func TestZs3serverFanoutTests(testSetup *testing.T) {
 
 	server, host, accessKey, secretKey, concurrent := read_file(testSetup)
 
-	commandGenerated := "./warp fanout --copies=50 --obj.size=512KiB --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
+	commandGenerated := "../warp fanout --copies=50 --obj.size=512KiB --host=" + server + ":" + host + " --access-key=" + accessKey + " --secret-key=" + secretKey + "  --concurrent " + concurrent + " --duration 30s" + " --obj.size 1KiB"
 	log.Println("Command Generated: ", commandGenerated)
 
 	output, err := cliutils.RunCommand(t, commandGenerated, 1, time.Hour*2)
